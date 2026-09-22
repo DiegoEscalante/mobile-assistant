@@ -1,4 +1,4 @@
-# 🤖 Asistente Personal Inteligente Multi-Agente con Control por Voz
+# Asistente Personal Inteligente Multi-Agente con Control por Voz
 
 > **Asignatura:** Desarrollo de Aplicaciones Móviles (DAM)  
 > **Proyecto:** Taller Segundo Corte: Asistente Personal Inteligente Multi-Agente, Ingestión Financiera Cero Fricción y Control por Voz.  
@@ -7,13 +7,13 @@
 
 ---
 
-## 📋 Descripción General
+## Descripción General
 
 El **Asistente Personal Inteligente Multi-Agente** es un sistema integral compuesto por una aplicación móvil (`front/`) y un backend orquestador (`back/`) desplegado en contenedores Docker. Permite gestionar tareas personales, obligaciones, estados del servidor y finanzas mediante interacción natural por voz, además de ofrecer **ingestión automática cero fricción** de notificaciones bancarias de dispositivos Android.
 
 ---
 
-## 🏛️ Arquitectura del Sistema y Estructura de Directorios
+## Arquitectura del Sistema y Estructura de Directorios
 
 El repositorio mantiene una separación clara de responsabilidades entre el frontend móvil y el backend servidor:
 
@@ -48,7 +48,7 @@ assistant/
 
 ---
 
-## 🔄 Flujo Arquitectónico General
+## Flujo Arquitectónico General
 
 ```mermaid
 graph TD
@@ -69,19 +69,7 @@ graph TD
 
 ---
 
-## 🌟 Pilares Principales del Entregable
-
-| Pilar | Descripción |
-|---|---|
-| **📱 Aplicación Móvil y Voz (25%)** | Desarrollada en React Native / Expo. Incluye captura de voz por micrófono (STT), síntesis de voz (TTS con `expo-speech`), pantalla interactiva conversacional, gestor de tareas y dashboard financiero. |
-| **🧠 Backend API Multi-Agente (25%)** | Desarrollado con FastAPI y el modelo local `llama3.1:8b` en Ollama. Utiliza un Agente Orquestador principal y dos agentes especializados (`SecretaryAgent` y `FinancialAgent`) mediante llamadas a funciones (Function Calling). |
-| **💳 Ingestión Bancaria Cero Fricción (20%)** | Servicio en segundo plano en Android (`NotificationListenerService`) que intercepta notificaciones de compras y transferencias (Bancolombia, Nequi, Davivienda, Nu), las envía al webhook `/webhooks/bank`, extrae los datos y los registra automáticamente en la BD. |
-| **🔒 Red VPN Mesh Tailscale (15%)** | Comunicación segura punto a punto entre la aplicación móvil y el servidor a través de Tailscale WireGuard mesh VPN sin necesidad de abrir puertos públicos en el router. |
-| **📊 Base de Datos Relacional (15%)** | Modelo PostgreSQL optimizado (`tasks`, `accounts`, `transactions`) con integridad referencial e índices para búsquedas por estado, fechas y categorías. |
-
----
-
-## 🚀 Instrucciones de Configuración y Despliegue
+## Instrucciones de Configuración y Despliegue
 
 ### 1. Prerrequisitos
 - **Docker** & **Docker Compose** instalados en el servidor.
@@ -142,7 +130,7 @@ graph TD
 
 ---
 
-## 📡 Endpoints Principales de la API Backend
+## Endpoints Principales de la API Backend
 
 | Método | Endpoint | Descripción |
 |---|---|---|
@@ -155,7 +143,7 @@ graph TD
 
 ---
 
-## 🧪 Pruebas Rápidas
+## Pruebas Rápidas
 
 ### Prueba del Orquestador Multi-Agente (`/chat`)
 ```bash
@@ -173,6 +161,6 @@ curl -X POST http://localhost:8000/webhooks/bank \
 
 ---
 
-## 📄 Licencia y Entregables Académicos
+## Licencia y Entregables Académicos
 
 Este repositorio forma parte de los entregables para la asignatura de **Desarrollo de Aplicaciones Móviles (DAM)**. El código fuente está comentado en sus secciones críticas para facilitar la evaluación y auditoría.
