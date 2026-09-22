@@ -1,3 +1,11 @@
+// ==============================================================================
+// PROYECTO: Asistente Personal Inteligente Multi-Agente (Mobile Frontend)
+// MÓDULO: Punto de Entrada Principal (App.tsx)
+// DESCRIPCIÓN: Aplicación React Native / Expo con navegación por pestañas
+//              (Voz, Asistente, Tareas, Finanzas), verificación de conexión
+//              al backend FastAPI y gestión global de fuentes e i18n.
+// ==============================================================================
+
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,

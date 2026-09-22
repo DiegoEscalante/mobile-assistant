@@ -1,3 +1,11 @@
+// ==============================================================================
+// PROYECTO: Asistente Personal Inteligente Multi-Agente (Mobile Frontend)
+// MÓDULO: Pantalla de Control por Voz (VoiceScreen.tsx)
+// DESCRIPCIÓN: Interfaz para interacción por voz. Captura audio del micrófono,
+//              convierte voz a texto (Speech-To-Text), envía peticiones al backend
+//              y sintetiza respuestas habladas (Text-To-Speech / TTS con expo-speech).
+// ==============================================================================
+
 import React, { useState } from 'react';
 import {
   View,

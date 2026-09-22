@@ -1,3 +1,11 @@
+// ==============================================================================
+// PROYECTO: Asistente Personal Inteligente Multi-Agente (Mobile Frontend)
+// MÓDULO: Cliente HTTP API REST (client.ts)
+// DESCRIPCIÓN: Encapsula las peticiones HTTP al backend FastAPI (sobre la red Tailscale).
+//              Soporta timeouts configurables, reintentos y mapeo de datos para
+//              chat conversacional, tareas, cuentas y transacciones financieras.
+// ==============================================================================
+
 import { getServerUrl } from './config';
 import { Task, Account, Transaction, CashFlow } from '../types';
 

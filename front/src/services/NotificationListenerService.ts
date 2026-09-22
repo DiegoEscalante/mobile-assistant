@@ -1,3 +1,11 @@
+// ==============================================================================
+// PROYECTO: Asistente Personal Inteligente Multi-Agente (Mobile Frontend)
+// MÓDULO: Servicio Listener de Notificaciones Bancarias (NotificationListenerService.ts)
+// DESCRIPCIÓN: Intercepta notificaciones entrantes de Android en segundo plano (HeadlessJS),
+//              detecta palabras clave bancarias o de billeteras electrónicas (Bancolombia, Nequi, etc.)
+//              y envía automáticamente el texto al endpoint /webhooks/bank vía VPN Tailscale.
+// ==============================================================================
+
 import { Platform, AppRegistry } from 'react-native';
 import RNAndroidNotificationListener, {
   RNAndroidNotificationListenerHeadlessJsName,
