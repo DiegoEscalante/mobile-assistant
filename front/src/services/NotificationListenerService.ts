@@ -161,8 +161,12 @@ export const handleNotificationReceived = async (data: any): Promise<void> => {
     }
 
     console.log('🤖 Bank notification intercepted successfully:', notificationText);
-    const result = await api.simulateBankWebhook(notificationText);
-    console.log('✅ Webhook transaction created:', JSON.stringify(result));
+    const result: any = await api.simulateBankWebhook(notificationText);
+    if (result?.status === 'duplicate_ignored') {
+      console.log('ℹ️ Webhook transaction already recorded (duplicate skipped):', JSON.stringify(result));
+    } else {
+      console.log('✅ Webhook transaction created successfully:', JSON.stringify(result));
+    }
   } catch (err: any) {
     console.error('❌ Error processing bank notification webhook:', err.message || err);
   }
