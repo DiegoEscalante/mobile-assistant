@@ -29,9 +29,19 @@ export const BANK_KEYWORDS = [
   'exito',
   'rappi',
   'uber',
-  '$',
-  'cop',
 ];
+
+// Regex matching whole words for bank keywords (prevents 'copyright' from matching 'cop')
+const FINANCIAL_KEYWORD_REGEX = new RegExp(
+  `\\b(${[...BANK_KEYWORDS, 'cop', 'usd', 'eur'].join('|')})\\b`,
+  'i'
+);
+
+// Regex matching explicit monetary amounts (e.g. $48.500, COP 48.500, 48500 COP, $ 5000)
+const MONETARY_AMOUNT_REGEX = /(?:COP|USD|EUR|\$)\s*\d[\d.,]*|\d[\d.,]*\s*(?:COP|USD|EUR)/i;
+
+// Regex identifying known dedicated banking/wallet apps by package name
+const BANK_PACKAGE_REGEX = /bancolombia|nequi|davivienda|daviplata|nubank|banco/i;
 
 export const checkNotificationPermission = async (): Promise<boolean> => {
   if (Platform.OS !== 'android') return false;
@@ -92,10 +102,47 @@ export const extractNotificationText = (data: any): string => {
 };
 
 export const isBankNotification = (data: any): boolean => {
-  const combinedText = extractNotificationText(data).toLowerCase();
+  const combinedText = extractNotificationText(data);
   if (!combinedText) return false;
 
-  return BANK_KEYWORDS.some((kw) => combinedText.includes(kw));
+  const lowerText = combinedText.toLowerCase();
+
+  // 1. If notification is from a dedicated banking/wallet app, check for any keyword or amount
+  let appName = '';
+  if (data && typeof data === 'object') {
+    appName = data.app || data.package || '';
+  }
+  if (BANK_PACKAGE_REGEX.test(appName)) {
+    return FINANCIAL_KEYWORD_REGEX.test(lowerText) || MONETARY_AMOUNT_REGEX.test(combinedText);
+  }
+
+  // 2. For generic apps (e.g. Gmail com.google.android.gm, SMS, etc.):
+  // Require BOTH a standalone financial keyword AND a monetary amount pattern ($45.000, COP 20.000, etc.)
+  const hasKeyword = FINANCIAL_KEYWORD_REGEX.test(lowerText);
+  const hasAmount = MONETARY_AMOUNT_REGEX.test(combinedText);
+
+  return hasKeyword && hasAmount;
+};
+
+const recentNotificationsCache = new Map<string, number>();
+const DUP_WINDOW_MS = 15000; // 15 seconds deduplication window
+
+const isDuplicateNotification = (text: string): boolean => {
+  const now = Date.now();
+  // Clean up expired cache entries
+  for (const [key, timestamp] of recentNotificationsCache.entries()) {
+    if (now - timestamp > DUP_WINDOW_MS) {
+      recentNotificationsCache.delete(key);
+    }
+  }
+
+  const key = text.trim().slice(0, 150);
+  if (recentNotificationsCache.has(key)) {
+    return true;
+  }
+
+  recentNotificationsCache.set(key, now);
+  return false;
 };
 
 export const handleNotificationReceived = async (data: any): Promise<void> => {
@@ -105,6 +152,11 @@ export const handleNotificationReceived = async (data: any): Promise<void> => {
 
     if (!notificationText || !isBankNotification(data)) {
       console.log('ℹ️ Notification skipped (not matched as bank alert)');
+      return;
+    }
+
+    if (isDuplicateNotification(notificationText)) {
+      console.log('⚠️ Duplicate notification ignored (within 15s window)');
       return;
     }
 

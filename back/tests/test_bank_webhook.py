@@ -31,6 +31,46 @@ class TestBankWebhook(unittest.TestCase):
         self.assertEqual(parsed["amount"], 1500000.0)
         self.assertEqual(parsed["currency"], "COP")
 
+    def test_parse_nequi_notification(self):
+        """Test parsing Nequi send money notification."""
+        text = "Enviaste $25.000 a Juan Perez"
+        parsed = parse_bank_notification(text)
+
+        self.assertEqual(parsed["type"], "expense")
+        self.assertEqual(parsed["amount"], 25000.0)
+        self.assertEqual(parsed["merchant"], "Juan Perez")
+
+    def test_parse_bancolombia_compra(self):
+        """Test parsing Bancolombia purchase notification with card mask."""
+        text = "Bancolombia le informa compra por $35.000 en D1 con tarjeta *1234"
+        parsed = parse_bank_notification(text)
+
+        self.assertEqual(parsed["type"], "expense")
+        self.assertEqual(parsed["amount"], 35000.0)
+        self.assertEqual(parsed["merchant"], "D1")
+
+    def test_parse_non_monetary_notification(self):
+        """Test parsing non-monetary system notification."""
+        text = "Vercel 1 new project available to import"
+        parsed = parse_bank_notification(text)
+
+        self.assertEqual(parsed["amount"], 0.0)
+        self.assertEqual(parsed["merchant"], "Comercio desconocido")
+
+    def test_parse_bancolombia_incoming_transfer(self):
+        """Test parsing Bancolombia incoming transfer email notification."""
+        text = (
+            "Alertas y Notificaciones Alertas y Notificaciones Alertas y Notificaciones "
+            "Bancolombia: DIEGO, recibiste una transferencia de DIEGO ESCALANTE por $1,000.00 "
+            "en tu cuenta *3582 conectada a la llave descalanteg05@gmail.com el 21/09/26 a las 21:05."
+        )
+        parsed = parse_bank_notification(text)
+
+        self.assertEqual(parsed["type"], "income")
+        self.assertEqual(parsed["amount"], 1000.0)
+        self.assertEqual(parsed["currency"], "COP")
+        self.assertEqual(parsed["merchant"], "DIEGO ESCALANTE")
+
     @patch("financial_manager.create_transaction")
     def test_process_bank_webhook(self, mock_create_tx):
         """Test process_bank_webhook parses text and inserts transaction into DB."""
