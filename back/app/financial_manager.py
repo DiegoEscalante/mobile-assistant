@@ -155,7 +155,21 @@ def create_transaction(
                 ),
             )
 
-            return transaction_to_dict(cur.fetchone())
+            transaction_row = cur.fetchone()
+
+            if account_id and transaction_row:
+                if type == "income":
+                    cur.execute(
+                        "UPDATE accounts SET current_balance = current_balance + %s WHERE id = %s",
+                        (amount, account_id),
+                    )
+                elif type == "expense":
+                    cur.execute(
+                        "UPDATE accounts SET current_balance = current_balance - %s WHERE id = %s",
+                        (amount, account_id),
+                    )
+
+            return transaction_to_dict(transaction_row)
 
 
 def get_transaction(transaction_id: int):

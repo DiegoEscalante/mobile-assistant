@@ -57,6 +57,14 @@ class TestBankWebhook(unittest.TestCase):
         self.assertEqual(parsed["amount"], 0.0)
         self.assertEqual(parsed["merchant"], "Comercio desconocido")
 
+    def test_parse_bank_name_detection(self):
+        """Test bank institution name detection."""
+        bancolombia_text = "Bancolombia: Compra por $50.000 en EXITO"
+        nequi_text = "Nequi: Recibiste $20.000"
+
+        self.assertEqual(parse_bank_notification(bancolombia_text)["bank_name"], "Bancolombia")
+        self.assertEqual(parse_bank_notification(nequi_text)["bank_name"], "Nequi")
+
     def test_parse_bancolombia_incoming_transfer(self):
         """Test parsing Bancolombia incoming transfer email notification."""
         text = (

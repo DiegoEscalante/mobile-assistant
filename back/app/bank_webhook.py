@@ -220,19 +220,78 @@ def parse_bank_notification(notification_text: str) -> Dict[str, Any]:
     ):
         category = "shopping"
 
+    # Detect bank / financial institution
+    bank_name = None
+    if "bancolombia" in lower_text:
+        bank_name = "Bancolombia"
+    elif "nequi" in lower_text:
+        bank_name = "Nequi"
+    elif "davivienda" in lower_text:
+        bank_name = "Davivienda"
+    elif "daviplata" in lower_text:
+        bank_name = "Daviplata"
+    elif "nubank" in lower_text or " nu " in f" {lower_text} " or lower_text.startswith("nu "):
+        bank_name = "Nu"
+    elif "bbva" in lower_text:
+        bank_name = "BBVA"
+    elif "banco de bogota" in lower_text or "banco bogota" in lower_text:
+        bank_name = "Banco de Bogotá"
+    elif "banco de occidente" in lower_text:
+        bank_name = "Banco de Occidente"
+    elif "colpatria" in lower_text or "scotiabank" in lower_text:
+        bank_name = "Scotiabank Colpatria"
+    elif "banco falabella" in lower_text or "falabella" in lower_text:
+        bank_name = "Banco Falabella"
+    elif "rappipay" in lower_text:
+        bank_name = "RappiPay"
+
     return {
         "type": transaction_type,
         "amount": amount,
         "currency": currency,
         "merchant": merchant,
         "category": category,
+        "bank_name": bank_name,
         "description": f"Ingestión automatizada: {text[:100]}",
     }
+
+
+def find_or_create_account(bank_name: Optional[str], currency: str = "COP") -> Optional[int]:
+    """Search for existing account matching bank_name or auto-create one if missing."""
+    if not bank_name:
+        return None
+
+    try:
+        accounts = financial_manager.get_accounts()
+        bank_key = bank_name.lower()
+
+        # 1. Search for existing matching account (e.g. "Bancolombia", "Cuenta Bancolombia", "Ahorros Bancolombia")
+        for acc in accounts:
+            acc_name_lower = acc["name"].lower()
+            if bank_key in acc_name_lower or acc_name_lower in bank_key:
+                return acc["id"]
+
+        # 2. Auto-create account if no matching account exists
+        new_acc = financial_manager.create_account(
+            name=bank_name,
+            account_type="bank_account",
+            currency=currency,
+            current_balance=0.0,
+        )
+        return new_acc["id"]
+    except Exception as e:
+        print(f"Error finding/creating account for {bank_name}: {e}")
+        return None
 
 
 def process_bank_webhook(notification_text: str) -> Dict[str, Any]:
     """Process incoming webhook text payload and save transaction to DB."""
     extracted = parse_bank_notification(notification_text)
+
+    # Match or auto-create account for the detected bank
+    account_id = find_or_create_account(
+        extracted.get("bank_name"), extracted.get("currency", "COP")
+    )
 
     # Deduplicate recent identical transactions
     try:
@@ -261,8 +320,10 @@ def process_bank_webhook(notification_text: str) -> Dict[str, Any]:
         type=extracted["type"],
         amount=extracted["amount"],
         currency=extracted["currency"],
+        account_id=account_id,
         merchant=extracted["merchant"],
         category=extracted["category"],
+        payment_method=extracted.get("bank_name"),
         description=extracted["description"],
     )
 
