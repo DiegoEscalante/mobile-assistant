@@ -1,3 +1,10 @@
+# ==============================================================================
+# PROYECTO: Asistente Personal Inteligente Multi-Agente
+# MÓDULO: Agente Secretario (secretary_agent.py)
+# DESCRIPCIÓN: Especializado en la gestión de tareas, recordatorios, fechas de
+#              vencimiento y diagnóstico de estado del servidor de alojamiento.
+# ==============================================================================
+
 import task_manager
 from tools import get_server_status
 

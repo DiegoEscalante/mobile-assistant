@@ -1,3 +1,12 @@
+# ==============================================================================
+# PROYECTO: Asistente Personal Inteligente Multi-Agente
+# MÓDULO: Backend FastAPI Entrypoint (main.py)
+# DESCRIPCIÓN: Punto de entrada principal de la API REST backend. Expone endpoints
+#              para la salud del servicio, chat conversacional multi-agente (/chat),
+#              ingestión de notificaciones bancarias cero fricción (/webhooks/bank),
+#              y operaciones CRUD para tareas, cuentas y transacciones financieras.
+# ==============================================================================
+
 from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
@@ -10,6 +19,7 @@ from bank_webhook import process_bank_webhook
 
 app = FastAPI(
     title="Intelligent Multi-Agent Personal Assistant API",
+    description="API para orquestación de agentes IA, gestión de tareas y finanzas.",
     version="1.0.0",
 )
 

@@ -1,3 +1,10 @@
+# ==============================================================================
+# PROYECTO: Asistente Personal Inteligente Multi-Agente
+# MÓDULO: Agente Financiero (financial_agent.py)
+# DESCRIPCIÓN: Especializado en el análisis financiero, cálculo de flujo de caja,
+#              categorización de ingresos/gastos y gestión de cuentas bancarias.
+# ==============================================================================
+
 import financial_manager
 
 FINANCIAL_TOOLS = [

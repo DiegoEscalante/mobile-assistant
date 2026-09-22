@@ -11,7 +11,7 @@ except ImportError:
 
 DATABASE_URL = (
     f"postgresql://{os.environ.get('POSTGRES_USER', 'assistant')}:"
-    f"{os.environ.get('POSTGRES_PASSWORD', 'Diego12112005')}@"
+    f"{os.environ.get('POSTGRES_PASSWORD', 'assistant_pass')}@"
     f"{os.environ.get('POSTGRES_HOST', 'assistant-postgres')}:5432/"
     f"{os.environ.get('POSTGRES_DB', 'assistant')}"
 )

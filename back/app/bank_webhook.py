@@ -1,3 +1,12 @@
+# ==============================================================================
+# PROYECTO: Asistente Personal Inteligente Multi-Agente
+# MÓDULO: Ingestión Webhook Bancario Cero Fricción (bank_webhook.py)
+# DESCRIPCIÓN: Intercepta notificaciones SMS y Push bancarias de dispositivos móviles,
+#              extrae datos estructurados (tipo, monto, comercio, entidad bancaria),
+#              asocia/crea automáticamente cuentas bancarias y deduplica transacciones
+#              para su almacenamiento directo en la base de datos PostgreSQL.
+# ==============================================================================
+
 import re
 from typing import Dict, Any, Optional
 
@@ -6,13 +15,8 @@ import financial_manager
 
 def parse_bank_notification(notification_text: str) -> Dict[str, Any]:
     """
-    Extract structured transaction data from raw bank notification or SMS text.
-    Handles formats like:
-    - 'Your card was charged COP 48,500 at RESTAURANTE XYZ.'
-    - 'Compra por $48.500 en RESTAURANTE XYZ'
-    - 'Pago recibido de $150,000 en BANCO'
-    - 'Enviaste $25.000 a Juan Perez'
-    - 'Bancolombia: DIEGO, recibiste una transferencia de DIEGO ESCALANTE por $1,000.00 en tu cuenta *3582...'
+    Extrae datos estructurados de transacciones financieras a partir del texto plano
+    de notificaciones push o SMS bancarios (Bancolombia, Nequi, Davivienda, Nu, etc.).
     """
     text = notification_text.strip()
     lower_text = text.lower()

@@ -10,11 +10,11 @@
 ### 1.1 Academic Context
 - **Course:** Desarrollo de Aplicaciones Móviles (DAM)
 - **Assignment:** Taller Segundo Corte: Asistente Personal Inteligente Multi-Agente con Control por Voz
-- **Host Server Name:** `abeja`
-- **Operating System:** Debian 13 (Trixie) on x86_64
-- **Hardware Profile:** AMD Ryzen 7 5825U PRO (8 cores / 16 threads), 32 GB DDR4 RAM, 500 GB NVMe SSD (system) + 4 TB HDD storage
-- **Repository Location:** `/srv/docker/assistant`
-- **Tailscale Mesh VPN Address:** `100.95.186.80`
+- **Host Server Name:** `servidor-backend` (o hostname del servidor host)
+- **Operating System:** Linux (Debian/Ubuntu x86_64 recomendado)
+- **Hardware Profile:** 8 vCPUs / 16 GB+ RAM recomendado
+- **Repository Location:** `/srv/docker/assistant` (o ruta local del repositorio)
+- **Tailscale Mesh VPN Address:** `<TAILSCALE_IP>` (IP asignada en la red Mesh)
 
 ### 1.2 Evaluation Rubric & Core Pillars
 | Weight | Requirement Pillar | Objective & Deliverables |
@@ -268,7 +268,7 @@ sequenceDiagram
     autonumber
     actor Bank as Bank Notification (SMS / Push)
     participant Phone as Mobile Automation (Shortcuts / MacroDroid)
-    participant VPN as Tailscale WireGuard (100.95.186.80)
+    participant VPN as Tailscale WireGuard (<TAILSCALE_IP>)
     participant API as FastAPI (/webhooks/bank)
     participant Parser as bank_webhook.py
     participant DB as PostgreSQL (transactions)
@@ -290,7 +290,7 @@ sequenceDiagram
 
 Base URLs:
 - **Local Server:** `http://127.0.0.1:8000`
-- **Tailscale Remote:** `http://100.95.186.80:8000`
+- **Tailscale Remote:** `http://<TAILSCALE_IP>:8000`
 
 ### 6.1 Endpoints Summary Table
 | Method | Endpoint | Description | Auth Required |
@@ -675,7 +675,7 @@ Fulfill the 20% "Zero-Friction Banking" requirement by implementing one concrete
    └── README.md
    ```
 2. **3–5 Minute Video Demo Script:**
-   - **Minute 0:00–0:45 (Architecture & Tailscale):** Show server `abeja`, Docker containers running, phone disconnected from home Wi-Fi (on LTE/5G), Tailscale connected to `100.95.186.80`.
+   - **Minute 0:00–0:45 (Architecture & Tailscale):** Show backend server, Docker containers running, phone disconnected from home Wi-Fi (on LTE/5G), Tailscale connected to server IP.
    - **Minute 0:45–1:45 (Secretary Voice Commands):** Press mic, say `"Crea una tarea urgente para entregar taller de DAM el viernes"`. Show task appearing on phone screen and verified in PostgreSQL.
    - **Minute 1:45–2:45 (Financial Voice Commands):** Press mic, say `"Gasté 35000 en el almuerzo hoy"`. Show transaction recorded, cash-flow updated. Ask `"¿Cuánto he gastado en comida?"` and hear/read AI reply.
    - **Minute 2:45–3:45 (Zero-Friction Banking Webhook):** Trigger bank notification simulation on phone. Show webhook hit, transaction parsed automatically, notification displayed on mobile screen without manual entry.

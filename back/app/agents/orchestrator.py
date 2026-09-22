@@ -1,3 +1,11 @@
+# ==============================================================================
+# PROYECTO: Asistente Personal Inteligente Multi-Agente
+# MÓDULO: Agente Orquestador (orchestrator.py)
+# DESCRIPCIÓN: Administra el flujo de conversación, clasifica intenciones y
+#              coordina la ejecución de herramientas (Function Calling) entre los
+#              agentes especializados (SecretaryAgent y FinancialAgent).
+# ==============================================================================
+
 import json
 import logging
 import os
@@ -12,7 +20,7 @@ except ImportError:
 from agents.secretary_agent import SecretaryAgent
 from agents.financial_agent import FinancialAgent
 
-# Configure logger
+# Configuración del registrador de logs del orquestador
 logger = logging.getLogger("assistant.orchestrator")
 if not logger.handlers:
     handler = logging.StreamHandler()
@@ -23,7 +31,11 @@ if not logger.handlers:
 
 
 class OrchestratorAgent:
-    """Root Orchestrator Agent directing requests to specialized Secretary and Financial Agents."""
+    """
+    Agente Orquestador Principal que intercepta las consultas del usuario,
+    detecta intenciones, despacha llamadas a funciones registradas en los agentes
+    Secretario y Financiero, y sintetiza las respuestas finales utilizando Llama 3.1 8B.
+    """
 
     SYSTEM_PROMPT = (
         "Eres un Asistente Personal Inteligente Multi-Agente. "
