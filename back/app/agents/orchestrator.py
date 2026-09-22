@@ -100,7 +100,7 @@ class OrchestratorAgent:
         message: str,
         language: str = "es",
         debug: bool = False,
-        model: str = "llama3.1:8b",
+        model: str = os.getenv("OLLAMA_MODEL", "llama3.1:8b"),
     ) -> Union[str, Dict[str, Any]]:
         if not self.client:
             err_msg = "El cliente de Ollama no está inicializado." if language == "es" else "Ollama client is not initialized."
